@@ -1,23 +1,35 @@
-import React from "react";
-import { Container, Tabs, Tab, Box, Typography } from "@mui/material";
+import React, { useState } from "react";
+import {
+  Container,
+  Typography,
+  Tabs,
+  Tab,
+  Box,
+  Paper,
+} from "@mui/material";
 import { ProtectedRoute } from "../components/auth/ProtectedRoute";
 import { PrizeForm } from "../components/admin/PrizeForm";
 import { PrizeAssignment } from "../components/admin/PrizeAssignment";
 import { PrizeHistory } from "../components/admin/PrizeHistory";
 import { BannerUpload } from "../components/admin/BannerUpload";
+import { MatchResultsLoader } from "../components/admin/MatchResultsLoader";
 import { CompanyConfigComponent } from "../components/admin/CompanyConfig";
+import { UsersDashboard } from "../components/admin/UsersDashboard";
 
-function TabPanel(props: any) {
-  const { children, value, index, ...other } = props;
-  return (
-    <div role="tabpanel" hidden={value !== index} {...other}>
-      {value === index && <Box sx={{ py: 3 }}>{children}</Box>}
-    </div>
-  );
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
 }
 
+const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => (
+  <Box role="tabpanel" hidden={value !== index} sx={{ pt: 3 }}>
+    {value === index && children}
+  </Box>
+);
+
 export const AdminDashboard: React.FC = () => {
-  const [tabValue, setTabValue] = React.useState(0);
+  const [tab, setTab] = useState(0);
 
   return (
     <ProtectedRoute adminOnly>
@@ -25,36 +37,46 @@ export const AdminDashboard: React.FC = () => {
         <Typography variant="h4" sx={{ fontWeight: "bold", mb: 3 }}>
           👨‍💼 Panel de Administración
         </Typography>
-
-        <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3, overflowX: "auto" }}>
-          <Tabs value={tabValue} onChange={(e, newValue) => setTabValue(newValue)}>
-            <Tab label="🏆 Crear Premios" />
-            <Tab label="🎁 Entregar Premios" />
-            <Tab label="📋 Historial" />
+        <Paper>
+          <Tabs
+            value={tab}
+            onChange={(_, v) => setTab(v)}
+            variant="scrollable"
+            scrollButtons="auto"
+            sx={{ borderBottom: "1px solid #e0e0e0" }}
+          >
+            <Tab label="👥 Usuarios" />
+            <Tab label="🏆 Crear Premio" />
+            <Tab label="🎁 Entregar Premio" />
+            <Tab label="📜 Historial" />
+            <Tab label="⚽ Resultados" />
             <Tab label="📸 Banner" />
             <Tab label="⚙️ Configuración" />
           </Tabs>
-        </Box>
-
-        <TabPanel value={tabValue} index={0}>
-          <PrizeForm onPrizeCreated={() => setTabValue(1)} />
-        </TabPanel>
-
-        <TabPanel value={tabValue} index={1}>
-          <PrizeAssignment />
-        </TabPanel>
-
-        <TabPanel value={tabValue} index={2}>
-          <PrizeHistory />
-        </TabPanel>
-
-        <TabPanel value={tabValue} index={3}>
-          <BannerUpload />
-        </TabPanel>
-
-        <TabPanel value={tabValue} index={4}>
-          <CompanyConfigComponent />
-        </TabPanel>
+          <Box sx={{ p: 3 }}>
+            <TabPanel value={tab} index={0}>
+              <UsersDashboard />
+            </TabPanel>
+            <TabPanel value={tab} index={1}>
+              <PrizeForm />
+            </TabPanel>
+            <TabPanel value={tab} index={2}>
+              <PrizeAssignment />
+            </TabPanel>
+            <TabPanel value={tab} index={3}>
+              <PrizeHistory />
+            </TabPanel>
+            <TabPanel value={tab} index={4}>
+              <MatchResultsLoader />
+            </TabPanel>
+            <TabPanel value={tab} index={5}>
+              <BannerUpload />
+            </TabPanel>
+            <TabPanel value={tab} index={6}>
+              <CompanyConfigComponent />
+            </TabPanel>
+          </Box>
+        </Paper>
       </Container>
     </ProtectedRoute>
   );

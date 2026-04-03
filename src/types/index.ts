@@ -14,14 +14,6 @@ export interface User {
   hasCompanyCode: boolean;
 }
 
-export interface CompanyConfig {
-  id: string;
-  name: string;
-  logo?: string;
-  updatedAt: Date;
-  updatedBy: string;
-}
-
 export interface Match {
   id: string;
   homeTeam: string;
@@ -34,36 +26,30 @@ export interface Match {
   homeScore?: number;
   awayScore?: number;
   isFinished: boolean;
-  phase?: "groups" | "round16" | "quarterfinals" | "semifinals" | "final";
 }
-
-export type PrizeCriteria = "most_points_date" | "most_points_phase" | "most_points_tournament";
-export type PrizeAssignmentType = "automatic" | "manual";
-export type TieResolution = "all" | "draw" | "first";
 
 export interface Prize {
   id: string;
   name: string;
   description: string;
   photoUrl?: string;
-  criteria: PrizeCriteria;
-  assignmentType: PrizeAssignmentType;
-  tieResolution: TieResolution;
+  criteria: "most_points_date" | "most_points_phase" | "most_points_tournament";
+  assignmentType: "automatic" | "manual";
+  tieResolution: "all" | "draw" | "first";
   phase?: string;
   createdAt: Date;
-  createdBy: string;
+  createdBy?: string;
 }
 
 export interface PrizeAssignment {
   id: string;
   prizeId: string;
   userId: string;
-  userName: string;
+  userName?: string;
   assignmentDate: Date;
-  criteria: PrizeCriteria;
+  criteria: string;
   phase?: string;
-  points?: number;
-  assignedBy: string;
+  assignedBy?: string;
 }
 
 export interface Score {
@@ -80,4 +66,11 @@ export interface NotificationMessage {
   type: "success" | "error" | "info" | "warning";
   message: string;
   timestamp: Date;
+}
+
+export interface CompanyConfig {
+  id: string;
+  name: string;
+  updatedAt: Date;
+  updatedBy: string;
 }

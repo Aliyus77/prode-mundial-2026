@@ -14,11 +14,11 @@ export const registerSchema = z.object({
 });
 
 export const prizeSchema = z.object({
-  name: z.string().min(2, "Nombre requerido"),
+  name: z.string().min(2, "Requerido"),
   description: z.string().min(5, "Mínimo 5 caracteres"),
-  photoUrl: z.string().url("URL inválida").optional().or(z.literal("")),
+  photoUrl: z.string().optional(),
   criteria: z.enum(["most_points_date", "most_points_phase", "most_points_tournament"]),
   assignmentType: z.enum(["automatic", "manual"]),
-  tieResolution: z.enum(["all", "draw", "first"]),
+  tieResolution: z.enum(["all", "draw", "first"]).default("all"),
   phase: z.string().optional(),
 });

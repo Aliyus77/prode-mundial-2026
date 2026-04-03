@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "setup": "node generate-files.mjs",
-    "dev": "node generate-files.mjs && vite",
+    "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "tsc --noEmit"

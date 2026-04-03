@@ -5,8 +5,8 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { theme } from "./theme";
 import { AuthProvider } from "./contexts/AuthContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
-import { PrizeProvider } from "./contexts/PrizeContext";
 import { BannerProvider } from "./contexts/BannerContext";
+import { PrizeProvider } from "./contexts/PrizeContext";
 import { PredictionProvider } from "./contexts/PredictionContext";
 import { CompanyProvider } from "./contexts/CompanyContext";
 import { Navbar } from "./components/common/Navbar";
@@ -24,11 +24,11 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <AuthProvider>
-        <CompanyProvider>
-          <PrizeProvider>
+        <NotificationProvider>
+          <CompanyProvider>
             <BannerProvider>
-              <PredictionProvider>
-                <NotificationProvider>
+              <PrizeProvider>
+                <PredictionProvider>
                   <BrowserRouter>
                     <Navbar />
                     <NotificationSnackbar />
@@ -41,11 +41,11 @@ function App() {
                       <Route path="*" element={<NotFoundPage />} />
                     </Routes>
                   </BrowserRouter>
-                </NotificationProvider>
-              </PredictionProvider>
+                </PredictionProvider>
+              </PrizeProvider>
             </BannerProvider>
-          </PrizeProvider>
-        </CompanyProvider>
+          </CompanyProvider>
+        </NotificationProvider>
       </AuthProvider>
     </ThemeProvider>
   );

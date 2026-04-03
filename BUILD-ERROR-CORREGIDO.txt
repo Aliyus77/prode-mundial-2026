@@ -1,78 +1,185 @@
 ════════════════════════════════════════════════════════════════════════════════
-  ✅ ERROR CORREGIDO - Build TypeScript
+  ⚠️ BUILD MOSTRANDO VERSIÓN INICIAL - SOLUCIÓN
 ════════════════════════════════════════════════════════════════════════════════
 
 PROBLEMA:
-  Error TS2322 en src/components/admin/PrizeForm.tsx:151
-  Type '"phase"' is not assignable to the Prize form fields
+  Cuando ejecutas npm run dev, ves el proyecto en estado inicial
+  Sin: predicciones, empresa, credenciales en login, etc.
 
 CAUSA:
-  El campo "phase" estaba definido en el schema de Zod (validators.ts)
-  pero NO estaba en los defaultValues del formulario useForm.
+  La carpeta dist/ no se regeneró correctamente con los cambios
+  Hay caché de Vite que interfiere
+  Los cambios recientes no se compilaron en el build
 
-  react-hook-form requiere que todos los campos usados en Controller
-  estén definidos en defaultValues.
-
-SOLUCIÓN APLICADA:
-  Agregado "phase" a los defaultValues en PrizeForm.tsx:
-
-  ✅ ANTES:
-     defaultValues: {
-       name: "",
-       description: "",
-       photoUrl: "",
-       criteria: "most_points_tournament",
-       assignmentType: "automatic",
-       tieResolution: "all",
-     }
-
-  ✅ AHORA:
-     defaultValues: {
-       name: "",
-       description: "",
-       photoUrl: "",
-       criteria: "most_points_tournament",
-       assignmentType: "automatic",
-       tieResolution: "all",
-       phase: "",  ← Agregado
-     }
+SOLUCIÓN:
+  Hacer un CLEAN BUILD (limpieza completa + rebuild)
 
 ════════════════════════════════════════════════════════════════════════════════
-🔧 ARCHIVO MODIFICADO
+✅ OPCIÓN 1: BATCH AUTOMÁTICO (Recomendado)
 ════════════════════════════════════════════════════════════════════════════════
 
-src/components/admin/PrizeForm.tsx
-└─ Línea 25-35: Actualizado defaultValues para incluir phase
+Doble clic en: clean-build.bat
+
+Hace automáticamente:
+  ✅ Elimina carpeta dist/ (build anterior)
+  ✅ Limpia caché de Vite
+  ✅ npm install (verifica dependencias)
+  ✅ npm run build (build fresco)
+  ✅ Muestra "✅ BUILD COMPLETADO EXITOSAMENTE"
 
 ════════════════════════════════════════════════════════════════════════════════
-🧪 CÓMO HACER BUILD AHORA
+✅ OPCIÓN 2: MANUAL EN TERMINAL
 ════════════════════════════════════════════════════════════════════════════════
 
-OPCIÓN 1: Doble clic
-  build-only.bat
+cd D:\Dev-Work\PRODE_MUNDIAL
 
-OPCIÓN 2: Terminal
-  cd D:\Dev-Work\PRODE_MUNDIAL
-  npm run build
+# Eliminar build anterior
+rmdir /s /q dist
 
-OPCIÓN 3: Con GitHub (automático)
-  build-y-github.bat
+# Limpiar caché Vite
+rmdir /s /q node_modules\.vite
 
-════════════════════════════════════════════════════════════════════════════════
-✅ RESULTADO ESPERADO
-════════════════════════════════════════════════════════════════════════════════
+# Reinstalar dependencias
+npm install
 
+# Build fresco
 npm run build
 
-> prode-mundial@0.1.0 build
-> tsc && vite build
+════════════════════════════════════════════════════════════════════════════════
+🔄 DESPUÉS DEL CLEAN BUILD
+════════════════════════════════════════════════════════════════════════════════
 
-✅ dist/ folder created
-✅ index.html created
-✅ assets/ created with JS and CSS files
+1. Espera a que termine (mensaje "✅ BUILD COMPLETADO")
+
+2. Luego ejecuta:
+   npm run dev
+
+3. Abre en navegador:
+   http://localhost:5173
+
+4. VERIFICA que se ven TODOS los cambios:
+   ✅ Login con credenciales demo (juan@example.com, maria@example.com, etc)
+   ✅ Navbar: "⚽ PRODE 2026 — Mi Empresa PRODE" + "👤 Juan García"
+   ✅ Grupos: Todos los 72 partidos con inputs de predicción
+   ✅ Admin: Tab "⚙️ Configuración" con campo de empresa
+   ✅ Predicciones: Guardar, bloquear, persisten
+
+════════════════════════════════════════════════════════════════════════════════
+📊 QUÉ VERÁS CUANDO FUNCIONE CORRECTAMENTE
+════════════════════════════════════════════════════════════════════════════════
+
+Login (http://localhost:5173/login):
+  ✅ Card gris con:
+     Admin: admin@prode.com / admin123
+     Usuario 1: juan@example.com / pass123
+     Usuario 2: maria@example.com / pass123
+     Usuario 3: carlos@example.com / pass123
+
+Navbar (después de login como juan):
+  ✅ Izquierda: ⚽ PRODE 2026 — Mi Empresa PRODE
+  ✅ Centro: [Grupos] [Podio] [Admin si eres admin]
+  ✅ Derecha: 👤 Juan García [Logout]
+
+Grupos (/):
+  ✅ 12 grupos (A a L)
+  ✅ 72 partidos totales
+  ✅ Cada partido:
+     - Fecha
+     - Equipo 1 [input goles] - [input goles] Equipo 2
+     - Botón "Guardar Predicción"
+     - Estados: "⚠️ X horas" o "✅ Guardado" o "⏰ Límite pasado"
+
+Admin Panel (solo si admin@prode.com):
+  ✅ 5 tabs:
+     1. 🏆 Crear Premios
+     2. 🎁 Entregar Premios
+     3. 📋 Historial
+     4. 📸 Banner
+     5. ⚙️ Configuración ← NUEVO, para cambiar nombre empresa
+
+════════════════════════════════════════════════════════════════════════════════
+🆘 SI AÚN NO FUNCIONA
+════════════════════════════════════════════════════════════════════════════════
+
+1. Verificar que los archivos fuente tienen los cambios:
+   Abre en editor: src/components/auth/LoginForm.tsx
+   Busca: "Credenciales de Demo"
+   ✅ Debe estar
+
+   Abre: src/components/common/Navbar.tsx
+   Busca: "useCompany"
+   ✅ Debe estar
+
+2. Verificar que el build se completó:
+   Abre carpeta: dist/
+   ✅ Debe existir con archivos recientes
+   ✅ dist/index.html (>100 KB)
+   ✅ dist/assets/ (múltiples archivos)
+
+3. Limpiar caché del navegador:
+   F12 → Application → Clear All
+   O: Ctrl+Shift+Del → Borrar todo
+
+4. Hard refresh:
+   Ctrl+Shift+R (en Windows/Linux)
+   Cmd+Shift+R (en Mac)
+
+5. Si aún no funciona:
+   npm run dev → Ctrl+C (detener)
+   Ejecutar clean-build.bat nuevamente
+   npm run dev
+
+════════════════════════════════════════════════════════════════════════════════
+✅ CHECKLIST - Archivos que deben estar actualizados
+════════════════════════════════════════════════════════════════════════════════
+
+✅ src/components/auth/LoginForm.tsx
+   → Card con 4 credenciales de demo
+
+✅ src/components/common/Navbar.tsx
+   → Muestra empresa y nombre usuario
+
+✅ src/contexts/CompanyContext.tsx
+   → Archivo existe
+
+✅ src/hooks/useCompany.ts
+   → Archivo existe
+
+✅ src/components/admin/CompanyConfig.tsx
+   → Archivo existe
+
+✅ src/pages/AdminDashboard.tsx
+   → Tab "⚙️ Configuración" incluido
+
+✅ src/components/common/MatchPredictionForm.tsx
+   → Inputs de predicción funcional
+
+✅ src/main.tsx
+   → mockCompanyConfig inicializado
+
+✅ dist/ folder
+   → Recién creada (check timestamp)
+
+════════════════════════════════════════════════════════════════════════════════
+🚀 PASOS FINALES
+════════════════════════════════════════════════════════════════════════════════
+
+1. Ejecuta: clean-build.bat
+   (Espera a "✅ BUILD COMPLETADO EXITOSAMENTE")
+
+2. Ejecuta: npm run dev
+
+3. Abre: http://localhost:5173
+
+4. Verifica todos los cambios están presentes
+
+5. Si todo funciona:
+   git add .
+   git commit -m "Build limpio - Incluye todos los cambios (v2.1)"
+   git push origin develop
 
 ════════════════════════════════════════════════════════════════════════════════
 
-El build debe completarse sin errores ahora.
+EJECUTA AHORA: clean-build.bat
 
 ════════════════════════════════════════════════════════════════════════════════
